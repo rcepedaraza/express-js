@@ -1,31 +1,18 @@
 const express = require('express');
-const req = require('express/lib/request');
 const http = require('http');
 const app = express();
-const morgan = require("morgan");
+const path = require("path");
 
-app.use(morgan("short"));
-
-app.use(function(req, res, next) {
-    console.log(`In comes a ${req.method} to ${req.url}`);
-    next();
-})
-
-
-app.use(function (req, res, next) {
-    let minute = (new Date()).getMinutes();
-    console.log(`minute: ${minute}`);
-    if ((minute % 2) === 0) {
-        next();
-    } else {
-        res.statusCode = 403;
-        res.end("Not authorized");
-    }
-})
+// Sets up the public path
+const publicPath = path.resolve(__dirname, "public");
+console.log(__dirname);
+console.log(publicPath);
+// Sends static files from the publicPath directory
+app.use(express.static(publicPath));
 
 app.use(function(req, res) {
     res.writeHead(200, {"Content-type": "text/plain"});
-    res.end("Hello, world!");
+    res.end("Looks like you didn't find a static file.");
 })
 
 http.createServer(app).listen(3000);
